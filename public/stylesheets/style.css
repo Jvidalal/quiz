@@ -26,3 +26,6 @@ header, nav, section, footer {
 nav span {
 	margin-right: 10px;
 }
+#busquedas {
+	width: 80%;
+}
