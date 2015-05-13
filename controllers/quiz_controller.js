@@ -26,12 +26,29 @@ exports.answer=function(req, res) {
 //GET /quizes
 exports.index=function(req, res) {
 	if(req.query.search) {
-		models.Quiz.findAll({where: ["pregunta like ?", "%"+req.query.search.replace(/ /g, "%")+"%"]}).then(function(quizes) {
-			res.render('quizes/index', {quizes: quizes.sort()})
+		models.Quiz.findAll({where: ["pregunta like ?", "%"+req.query.search.replace(/ /g, "%")+"%"], order: "pregunta"}).then(function(quizes) {
+			res.render('quizes/index', {quizes: quizes})
 		}).catch(function(error) {next(error);});
 	} else {
 		models.Quiz.findAll().then(function(quizes) {
 			res.render('quizes/index', {quizes: quizes})
 		}).catch(function(error) {next(error);});
 	}
+}
+
+//GET /quizes/new
+exports.new=function(req, res) {
+	var quiz=models.Quiz.build(// crea objeto quiz
+		{pregunta: "Pregunta", respuesta: "Respuesta"});
+	res.render("quizes/new", {quiz: quiz});
+}
+
+//POST /quizes/create
+exports.create=function(req, res) {
+	var quiz=models.Quiz.build(req.body.quiz);
+	// Guarda en DB los campos pregunta y respuesta de quiz
+	quiz.save({fields: ["pregunta", "respuesta"]}).then(function() {
+		res.redirect("/quizes");// Redirección a /quizes
+	});
+
 }
