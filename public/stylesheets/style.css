@@ -29,3 +29,6 @@ nav span {
 #busquedas {
 	width: 80%;
 }
+#ErrorMsgs {
+	color: red;
+}
