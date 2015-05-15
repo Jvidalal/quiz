@@ -39,7 +39,7 @@ exports.index=function(req, res) {
 //GET /quizes/new
 exports.new=function(req, res) {
 	var quiz=models.Quiz.build(// crea objeto quiz
-		{pregunta: "Pregunta", respuesta: "Respuesta"});
+		{pregunta: "", respuesta: ""});
 	res.render("quizes/new", {quiz: quiz, errors: []});
 }
 
@@ -53,6 +53,30 @@ exports.create=function(req, res) {
 			} else {
 				// Guarda en DB los campos pregunta y respuesta de quiz
 				quiz.save({fields: ["pregunta", "respuesta"]}).then(function() {
+					res.redirect("/quizes");// Redirección a /quizes
+				});
+			}
+		}
+	);
+}
+
+//GET /quizes/:id/edit
+exports.edit=function(req, res) {
+	var quiz=req.quiz;// autoload de instancia quiz
+	res.render("quizes/edit", {quiz: quiz, errors: []});
+}
+
+//PUT /quizes/:id
+exports.update=function(req, res) {
+	req.quiz.pregunta=req.body.quiz.pregunta;
+	req.quiz.respuesta=req.body.quiz.respuesta;
+	req.quiz.validate().then(
+		function(err) {
+			if(err) {
+				res.render("quizes/new", {quiz: req.quiz, errors: err.errors});
+			} else {
+				// Guarda en DB los campos pregunta y respuesta de quiz
+				req.quiz.save({fields: ["pregunta", "respuesta"]}).then(function() {
 					res.redirect("/quizes");// Redirección a /quizes
 				});
 			}
