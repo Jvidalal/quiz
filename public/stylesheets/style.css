@@ -32,3 +32,6 @@ nav span {
 #ErrorMsgs {
 	color: red;
 }
+.right{
+	float:right;
+}

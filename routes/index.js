@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var quizController = require('../controllers/quiz_controller');
 var commentController = require('../controllers/comment_controller');
+var sessionController=require("../controllers/session_controller");
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -25,5 +26,10 @@ router.post("/quizes/:quizId(\\d+)/comments", commentController.create);
 router.get("/author", function(req, res) {
 	res.render("author", {errors: []});
 });
+
+// Definición de rutas de sesión
+router.get("/login", sessionController.new); // form login
+router.post("/login", sessionController.create); // crear sessión
+router.get("/logout", sessionController.destroy); // destruye sessión
 
 module.exports = router;
