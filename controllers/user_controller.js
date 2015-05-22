@@ -31,7 +31,7 @@ exports.autenticar=function(login, password, callback) {
 exports.new=function(req, res) {
 	var user=models.User.build(
 		{username: "", password: ""});
-	res.render("users/new", {user: user, errors: []});
+	res.render("users/new", {user: user, redir:req.session.redir.toString(), errors: []});
 };
 
 // POST /user
@@ -43,7 +43,7 @@ exports.create=function(req, res){
 		} else {
 			user.save({fields: ["username", "password"]}).then(
 				function(){
-					req.session.user={id: user.id, username: user.username};
+					req.session.user={id: user.id, username: user.username, isAdmin: user.isAdmin};
 					res.redirect(req.session.redir.toString());
 				});
 		}
@@ -61,7 +61,7 @@ exports.destroy=function(req, res, next) {
 
 // GET /user/:id/edit
 exports.edit=function(req, res) {
-	res.render("users/edit", {user: req.user, errors: []});
+	res.render("users/edit", {user: req.user, redir:req.session.redir.toString(), errors: []});
 	// req.user: instancia de user cargada con autoload
 };
 
@@ -75,9 +75,22 @@ exports.update=function(req, res, next) {
 		} else {
 			req.user.save({fields: ["username", "password"]}).then(
 				function(){
-					req.session.user={id: req.user.id, username: req.user.username};
+					req.session.user={id: req.user.id, username: req.user.username, isAdmin: req.user.isAdmin};
 					res.redirect(req.session.redir.toString());
 				});
 		}
 	}).catch(function(error){next(error);});
+};
+
+// MW que permite acciones solamente si el usuario objeto
+// pertenece al usuario logeado o si es cuenta admin
+exports.ownershipRequired=function(req, res, next) {
+	var objUser=req.user.id;
+	var logUser=req.session.user.id;
+	var isAdmin=req.session.user.isAdmin;
+	if(isAdmin || objUser===logUser) {
+		next();
+	} else {
+		res.redirect(req.session.redir.toString());
+	}
 };

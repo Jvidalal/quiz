@@ -11,7 +11,7 @@ exports.load=function(req, res, next, quizId) {
 			next();
 		} else {next(new Error('No existe quizId='+quizId));}
 	}).catch(function(error) {next(error);});
-}
+};
 //GET /quizes/:id
 exports.show=function(req, res) {
 	res.render('quizes/show', {quiz: req.quiz, errors: []});
@@ -37,14 +37,14 @@ exports.index=function(req, res) {
 			res.render('quizes/index', {quizes: quizes, errors: []});
 		}).catch(function(error) {next(error);});
 	}
-}
+};
 
 //GET /quizes/new
 exports.new=function(req, res) {
 	var quiz=models.Quiz.build(// crea objeto quiz
 		{pregunta: "", respuesta: ""});
 	res.render("quizes/new", {quiz: quiz, errors: []});
-}
+};
 
 //POST /quizes/create
 exports.create=function(req, res) {
@@ -62,13 +62,13 @@ exports.create=function(req, res) {
 			}
 		}
 	);
-}
+};
 
 //GET /quizes/:id/edit
 exports.edit=function(req, res) {
 	var quiz=req.quiz;// autoload de instancia quiz
 	res.render("quizes/edit", {quiz: quiz, errors: []});
-}
+};
 
 //PUT /quizes/:id
 exports.update=function(req, res) {
@@ -86,7 +86,7 @@ exports.update=function(req, res) {
 			}
 		}
 	);
-}
+};
 
 //DELETE /quizes/:id
 exports.destroy=function(req, res) {
@@ -97,4 +97,17 @@ exports.destroy=function(req, res) {
 		}
 		res.redirect("/quizes");
 	}).catch(function(error){next(error)});
-}
+};
+
+// MW que permite acciones solamente si el quiz objeto
+// pertenece al usuario logeado o si es cuenta admin
+exports.ownershipRequired=function(req, res, next) {
+	var objQuizOwner=req.quiz.UserId;
+	var logUser=req.session.user.id;
+	var isAdmin=req.session.user.isAdmin;
+	if(isAdmin || objQuizOwner===logUser) {
+		next();
+	} else {
+		res.redirect(req.session.redir.toString());
+	}
+};
