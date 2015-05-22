@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Helpers dinámicos:
 app.use(function(req, res, next) {
     // Guardar path en session.redir para poder redireccionar
-    if(!req.path.match(/\/login|\/logout/)) {
+    if(!req.path.match(/\/login|\/logout|\/user|\/user|\/:userId(\\d+)|\/:userId(\\d+)\/edit/)) {
         req.session.redir=req.path;
     }
     // Hacer visible req.session en las vistas
