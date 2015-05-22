@@ -14,4 +14,7 @@ footer, input{
 #respuesta {
 	width: 90%;
 }
+.quiz_img {
+	float: none;
+}
 
