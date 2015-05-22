@@ -24,6 +24,9 @@
         <span><a href="/quizes">Preguntas</a></span>
         <span><a href="/author">Autor</a></span>
         <span><a href="/quizes/statistics">Estadísticas</a></span>
+        <%if(session.user){%>
+          <span><a href="/user/<%=session.user.id%>/quizes">Mis Preguntas</a></span>
+        <%}%>
         <span>
           <form method='get' action='/quizes'>
             <p>
