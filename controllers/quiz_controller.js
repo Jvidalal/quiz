@@ -28,15 +28,25 @@ exports.answer=function(req, res) {
 
 //GET /quizes
 exports.index=function(req, res, next) {
+	var quizIds=[];
 	var options={};
 	if(req.user) {
 		// req.user es creado por autoload de usuario
-		// si la ruta lleva el pará .quizId
+		// si la ruta lleva el parámetro userId
 		options.where={UserId: req.user.id};
 	}
 	if(req.query.search) {
 		models.Quiz.findAll({where: ["pregunta like ?", "%"+req.query.search.replace(/ /g, "%")+"%"], order: "pregunta"}).then(function(quizes) {
 			res.render('quizes/index', {quizes: quizes, errors: []});
+		}).catch(function(error) {next(error);});
+	} else if(req.session.user) {
+		models.Favourites.findAll({ where: { UserId: Number(req.session.user.id)}}).then(function(favourites) {
+			for (i in favourites) {
+				quizIds.push(favourites[i].QuizId);
+			};
+			models.Quiz.findAll(options).then(function(quizes) {
+				res.render('quizes/index', {quizes: quizes, quizIds: quizIds, errors: []});
+			});
 		}).catch(function(error) {next(error);});
 	} else {
 		models.Quiz.findAll(options).then(function(quizes) {

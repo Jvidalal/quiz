@@ -6,6 +6,7 @@ var commentController = require('../controllers/comment_controller');
 var sessionController=require("../controllers/session_controller");
 var statisticController=require("../controllers/statistic_controller");
 var userController=require("../controllers/user_controller");
+var favouriteController=require("../controllers/favourite_controller");
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -56,4 +57,10 @@ router.get("/user/:userId(\\d+)/edit", sessionController.loginRequired, userCont
 router.put("/user/:userId(\\d+)", sessionController.loginRequired, userController.ownershipRequired, userController.update);
 router.delete("/user/:userId(\\d+)", sessionController.loginRequired, userController.ownershipRequired, userController.destroy);
 router.get("/user/:userId(\\d+)/quizes", quizController.index);
+
+// Definición de rutas de favoritos
+router.put("/user/:userId(\\d+)/favourites/:quizId(\\d+)", sessionController.loginRequired, favouriteController.update);
+router.delete("/user/:userId(\\d+)/favourites/:quizId(\\d+)", sessionController.loginRequired, favouriteController.destroy);
+router.get("/user/:userId(\\d+)/favourites", sessionController.loginRequired, favouriteController.index);
+
 module.exports = router;
