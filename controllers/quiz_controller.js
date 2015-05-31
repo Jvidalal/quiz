@@ -37,7 +37,7 @@ exports.index=function(req, res, next) {
 	}
 	if(req.query.search) {
 		models.Quiz.findAll({where: ["pregunta like ?", "%"+req.query.search.replace(/ /g, "%")+"%"], order: "pregunta"}).then(function(quizes) {
-			res.render('quizes/index', {quizes: quizes, errors: []});
+			res.render('quizes/index', {quizes: quizes, quizIds: [], search:true, errors: []});
 		}).catch(function(error) {next(error);});
 	} else if(req.session.user) {
 		models.Favourites.findAll({ where: { UserId: Number(req.session.user.id)}}).then(function(favourites) {
@@ -45,12 +45,12 @@ exports.index=function(req, res, next) {
 				quizIds.push(favourites[i].QuizId);
 			};
 			models.Quiz.findAll(options).then(function(quizes) {
-				res.render('quizes/index', {quizes: quizes, quizIds: quizIds, errors: []});
+				res.render('quizes/index', {quizes: quizes, quizIds: quizIds, search:false, errors: []});
 			});
 		}).catch(function(error) {next(error);});
 	} else {
 		models.Quiz.findAll(options).then(function(quizes) {
-			res.render('quizes/index', {quizes: quizes, errors: []});
+			res.render('quizes/index', {quizes: quizes, search:false,errors: []});
 		}).catch(function(error) {next(error);});
 	}
 };

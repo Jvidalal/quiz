@@ -28,7 +28,7 @@ exports.index=function(req, res){
 				quizIds.push(favourites[i].QuizId);
 		};
 		models.Quiz.findAll( {where:{ id: quizIds} }).then(function(quizes){
-			res.render('quizes/index.ejs',{quizes: quizes , quizIds: quizIds , errors: []});
+			res.render('quizes/index.ejs',{quizes: quizes , search:false, quizIds: quizIds , errors: []});
 		});	
 	});
 };
